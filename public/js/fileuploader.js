@@ -32,7 +32,8 @@ class AjaxUploader {
 
 				image.src = `/public/${response[1].client_name}`;
 				console.log(self);
-				$(`#${self.cropperId}`).cropper({
+				self.cropperInstance = $(`#${self.cropperId}`);
+				self.cropperInstance.cropper({
 					aspectRatio: 16 / 9,
 					crop: function (e) {
 						// Output the result data for cropping image.
@@ -50,7 +51,9 @@ class AjaxUploader {
 			}
 		}
 		this.xml_http_request.send(this.form_data);
-
 	}
 
+	getCroppedData() {
+		return this.cropperInstance.cropper('getData');
+	}
 }

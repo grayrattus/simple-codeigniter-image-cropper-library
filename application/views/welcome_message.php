@@ -11,7 +11,7 @@
 	</style>
     </head>
     <body>
-	<div>
+	<div style="width: 500px;">
 	    <img id="imagecropper" src="">
 	</div>
 	<form action="" enctype="multipart/form-data" method="post">
@@ -23,19 +23,17 @@
     </body>
     <script>
 
-	    document.querySelector("#submit").addEventListener("click", function () {
-		    console.log("test");
-		    var data = [
-			    {type: "file", id: "image", cropperId: "imagecropper"}
-		    ];
-
-		    let fileuploader = new AjaxUploader("index.php/welcome/asyncFileUpload", "POST", data);
+	    let data = [
+		    {type: "file", id: "image", cropperId: "imagecropper"}
+	    ];
+	    let fileuploader = new AjaxUploader("index.php/welcome/asyncFileUpload", "POST", data);
+	    document.getElementById('image').onchange = function () {
 		    fileuploader.upload();
-	    });
+	    };
 
-	    //document.querySelector('#afile').addEventListener('change', function (e) {
-	    //        var file = this.files[0];
-	    //        console.log(file);
-	    //})
+	    document.querySelector("#submit").addEventListener("click", function () {
+		    fileuploader.getCroppedData();
+
+	    });
     </script>
 </html>
