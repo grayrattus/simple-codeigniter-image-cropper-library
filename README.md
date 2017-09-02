@@ -1,1 +1,0 @@
-# simple-codeigniter-image-cropper-library
