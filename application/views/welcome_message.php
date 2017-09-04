@@ -23,17 +23,20 @@
     </body>
     <script>
 
+	    let url = {
+		    upload: "index.php/welcome/asyncFileUpload",
+		    cropper: "index.php/welcome/croppImage"
+	    };
 	    let data = [
 		    {type: "file", id: "image", cropperId: "imagecropper"}
 	    ];
-	    let fileuploader = new AjaxUploader("index.php/welcome/asyncFileUpload", "POST", data);
+	    let fileuploader = new AjaxUploader(url, "POST", data);
 	    document.getElementById('image').onchange = function () {
 		    fileuploader.upload();
 	    };
 
 	    document.querySelector("#submit").addEventListener("click", function () {
-		    fileuploader.getCroppedData();
-
+		    fileuploader.uploadCropped();
 	    });
     </script>
 </html>

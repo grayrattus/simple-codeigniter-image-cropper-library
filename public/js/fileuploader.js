@@ -5,55 +5,76 @@
  */
 
 class AjaxUploader {
-
+	/* 
+	 *let url = {
+	 *        upload: "index.php/welcome/asyncFileUpload",
+	 *        cropper: "index.php/welcome/croppImage"
+	 *};
+	 *let data = [
+	 *        {type: "file", id: "image", cropperId: "imagecropper"}
+	 *];
+	 */
 	constructor(url, method, dataSelectors) {
-		this.form_data = new FormData();
+		// Initialization of uploadFormData object
+		this.uploadFormData = {};
+		this.uploadFormData.formData = new FormData();
 		for (let data of dataSelectors) {
 			let selectedItem = document.querySelector(`#${data.id}`);
 			if (data.type == "file") {
-				this.form_data.append("" + data.id, selectedItem.files[0]);
+				this.uploadFormData.formData.append("" + data.id, selectedItem.files[0]);
 			} else if (data.type == "text") {
-				this.form_data.append("" + data.id, selectedItem);
+				this.uploadFormData.formData.append("" + data.id, selectedItem);
 			}
 			this.cropperId = data.cropperId;
 		}
-		this.url = url;
-		this.method = method;
-		this.xml_http_request = new XMLHttpRequest();
+		this.uploadFormData.url = url.upload;
+		this.uploadFormData.method = method;
+		this.uploadFormData.formData.xmlHttpRequest = new XMLHttpRequest();
+
+		// Initialization of cropperFormData object
+		this.cropperFormData = {};
+		this.cropperFormData.formData = new FormData();
+		this.cropperFormData.url = url.cropper;
+		this.cropperFormData.method = method;
+		this.cropperFormData.formData.xmlHttpRequest = new XMLHttpRequest();
 	}
 
 	upload() {
-		this.xml_http_request.open(this.method, this.url, true);
+		this.uploadFormData.formData.xmlHttpRequest.open(this.uploadFormData.method, this.uploadFormData.url, true);
 		self = this;
-		this.xml_http_request.onload = function (e) {
+		this.uploadFormData.formData.xmlHttpRequest.onload = function (e) {
 			if (this.status == 200) {
 				let response = JSON.parse(this.response);
 				let image = document.getElementById(self.cropperId);
 
 				image.src = `/public/${response[1].client_name}`;
-				console.log(self);
 				self.cropperInstance = $(`#${self.cropperId}`);
 				self.cropperInstance.cropper({
 					aspectRatio: 16 / 9,
 					crop: function (e) {
-						// Output the result data for cropping image.
-						console.log(e.x);
-						console.log(e.y);
-						console.log(e.width);
-						console.log(e.height);
-						console.log(e.rotate);
-						console.log(e.scaleX);
-						console.log(e.scaleY);
 					}
 				});
-
-
 			}
 		}
-		this.xml_http_request.send(this.form_data);
+		this.uploadFormData.formData.xmlHttpRequest.send(this.uploadFormData.formData);
 	}
 
-	getCroppedData() {
-		return this.cropperInstance.cropper('getData');
+	uploadCropped() {
+		this.cropperFormData.formData.xmlHttpRequest.open(this.cropperFormData.method, this.cropperFormData.url, true);
+		this.cropperFormData.formData.append("cropperData[x]", this.cropperInstance.cropper('getData').x);
+		this.cropperFormData.formData.append("cropperData[y]", this.cropperInstance.cropper('getData').y);
+		this.cropperFormData.formData.append("cropperData[width]", this.cropperInstance.cropper('getData').width);
+		this.cropperFormData.formData.append("cropperData[height]", this.cropperInstance.cropper('getData').height);
+		this.cropperFormData.formData.append("cropperData[rotate]", this.cropperInstance.cropper('getData').rotate);
+		this.cropperFormData.formData.append("cropperData[scaleX]", this.cropperInstance.cropper('getData').scaleX);
+		this.cropperFormData.formData.append("cropperData[scaleY]", this.cropperInstance.cropper('getData').scaleY);
+		self = this;
+		this.cropperFormData.formData.xmlHttpRequest.onload = function (e) {
+			if (this.status == 200) {
+				// Here i need to add callback function
+				console.log(this.response);
+			}
+		}
+		this.cropperFormData.formData.xmlHttpRequest.send(this.cropperFormData.formData);
 	}
 }
