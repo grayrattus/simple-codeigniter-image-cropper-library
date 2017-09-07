@@ -45,9 +45,10 @@ class AjaxUploader {
 		this.uploadFormData.formData.xmlHttpRequest.onload = function (e) {
 			if (this.status == 200) {
 				let response = JSON.parse(this.response);
-				let image = document.getElementById(self.cropperId);
+				image = document.getElementById(self.cropperId);
 
-				image.src = `/public/${response[1].client_name}`;
+				self.sourceImage = `/public/${response[1].client_name}`;
+				image.src = self.sourceImage;
 				self.cropperInstance = $(`#${self.cropperId}`);
 				self.cropperInstance.cropper({
 					aspectRatio: 16 / 9,
@@ -61,10 +62,11 @@ class AjaxUploader {
 
 	uploadCropped() {
 		this.cropperFormData.formData.xmlHttpRequest.open(this.cropperFormData.method, this.cropperFormData.url, true);
-		this.cropperFormData.formData.append("cropperData[x]", this.cropperInstance.cropper('getData').x);
-		this.cropperFormData.formData.append("cropperData[y]", this.cropperInstance.cropper('getData').y);
-		this.cropperFormData.formData.append("cropperData[width]", this.cropperInstance.cropper('getData').width);
-		this.cropperFormData.formData.append("cropperData[height]", this.cropperInstance.cropper('getData').height);
+		this.cropperFormData.formData.append("cropperData[sourceImage]", this.sourceImage);
+		this.cropperFormData.formData.append("cropperData[x]", parseInt(this.cropperInstance.cropper('getData').x));
+		this.cropperFormData.formData.append("cropperData[y]", parseInt(this.cropperInstance.cropper('getData').y));
+		this.cropperFormData.formData.append("cropperData[width]", parseInt(this.cropperInstance.cropper('getData').width));
+		this.cropperFormData.formData.append("cropperData[height]", parseInt(this.cropperInstance.cropper('getData').height));
 		this.cropperFormData.formData.append("cropperData[rotate]", this.cropperInstance.cropper('getData').rotate);
 		this.cropperFormData.formData.append("cropperData[scaleX]", this.cropperInstance.cropper('getData').scaleX);
 		this.cropperFormData.formData.append("cropperData[scaleY]", this.cropperInstance.cropper('getData').scaleY);

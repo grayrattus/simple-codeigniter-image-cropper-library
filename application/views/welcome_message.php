@@ -25,7 +25,7 @@
 
 	    let url = {
 		    upload: "index.php/welcome/asyncFileUpload",
-		    cropper: "index.php/welcome/croppImage"
+		    cropper: "index.php/welcome/cropImage"
 	    };
 	    let data = [
 		    {type: "file", id: "image", cropperId: "imagecropper"}
